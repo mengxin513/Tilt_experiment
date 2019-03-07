@@ -3,12 +3,10 @@ from contextlib import closing
 import data_file
 from openflexure_microscope.microscope import picamera_supports_lens_shading
 import numpy as np
-import cv2
-from PIL import Image
-from camera_stuff import find_template
 import queue
 import threading
 import time
+import cv2
 from scipy import ndimage
 
 def image_capture(start_t, event, ms, q):
