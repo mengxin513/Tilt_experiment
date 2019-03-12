@@ -46,8 +46,8 @@ if __name__ == "__main__":
         def move_overlay(cx, cy, display_w, display_h):
             """move the overlay to show a shift of cx, cy camera pixels"""
             factor = display_h / 480.0
-            x = int((display_w - 640 * factor) / 2 + cx * factor - 32 / 2 * factor)
-            y = int(cy * factor - 32 / 2 * factor)
+            x = int((display_w - 640.0 * factor) / 2.0 + cx * factor - 32.0 / 2.0 * factor)
+            y = int(cy * factor - 32.0 / 2.0 * factor)
             overlay.window = (x, y, int(32 * factor), int(32 * factor))
 
         q = queue.Queue()
