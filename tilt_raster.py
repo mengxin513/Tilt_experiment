@@ -1,19 +1,13 @@
-
 from __future__ import print_function
-import time
 import argparse
-import numpy as np
-import picamera
-from openflexure_stage import OpenFlexureStage
 from openflexure_microscope import load_microscope
-from openflexure_microscope.microscope import picamera_supports_lens_shading
-import scipy
-from scipy import ndimage, signal
-from contextlib import contextmanager, closing
+from contextlib import closing
 import data_file
+from openflexure_microscope.microscope import picamera_supports_lens_shading
+import numpy as np
+import time
 import cv2
-from camera_stuff import find_template
-from PIL import Image
+from scipy import ndimage
 
 def measure_txy(ms, start_t, fraction):
     txy = np.zeros((1, 3))
@@ -79,7 +73,7 @@ def raster_snake(ms, area, step, start_t, backlash, fraction, expeiment_group):
         data_group = df.new_group('data', 'from snake_grid_scan', parent = snake_group)
         data_group['stage_position'] = stage.position
         txy = measure_txy(ms, start_t, fraction)
-        move_overlay(txy[0, 2], txy[0, 3], 1920, 1080)
+        move_overlay(txy[0, 1], txy[0, 2], 1920, 1080)
         data_group['cam_position'] = txy
         stage.move_rel([x, y, z])
         time.sleep(0.1)
@@ -99,6 +93,13 @@ def raster_snake(ms, area, step, start_t, backlash, fraction, expeiment_group):
         for j in range(0, area[0], step):
             move_stage(-step, 0, 0, ms, start_t, fraction, snake_group)
         move_stage(0, 0, step, ms, start_t, fraction, snake_group)
+    for j in range(0, area[0], step):
+        move_stage(step, 0, 0, ms, start_t, fraction, snake_group)
+    data_group = df.new_group('data', 'from snake_grid_scan', parent = snake_group)
+    data_group['stage_position'] = stage.position
+    txy = measure_txy(ms, start_t, fraction)
+    move_overlay(txy[0, 1], txy[0, 2], 1920, 1080)
+    data_group['cam_position'] = txy
     stage.move_abs(initial_stage_position)
 
 if __name__ == "__main__":

@@ -1,0 +1,2 @@
+Field of scan, Movement size
+50000, 5000

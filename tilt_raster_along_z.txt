@@ -1,0 +1,2 @@
+Scan range, Movement size
+50000, 5000

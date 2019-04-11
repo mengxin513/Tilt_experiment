@@ -36,6 +36,14 @@ if __name__ == "__main__":
         tilt_data = df.new_group("data", "time, camerax, cameray")
 
         camera.start_preview(resolution = (640, 480))
+        
+        frame = ms.rgb_image().astype(np.float32)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        frame += (frame.max() - frame.min()) * fraction - frame.max()
+        frame = cv2.threshold(frame, 0, 0, cv2.THRESH_TOZERO)[1]
+        peak = ndimage.measurements.center_of_mass(frame)
+        centre = (peak[1], peak[0])
+        ini_camera_pos = centre
 
         pad = np.zeros((32, 32, 3), dtype = np.uint8)
         pad[:, 15:17, :] = 255
@@ -72,7 +80,7 @@ if __name__ == "__main__":
                         centre = (peak[1], peak[0])
                         data[i, 1:] = centre
                         move_overlay(peak[1], peak[0], 1920, 1080)
-                        print("Displacement: {} [px]".format(np.linalg.norm(data[i, 1:3] - data[0, 1:3])))
+                        print("Displacement: {} [px]".format(np.linalg.norm(data[i, 1:3] - ini_camera_pos)))
                     df.add_data(data, tilt_data, "data")
                 else:
                     time.sleep(0.5)
