@@ -38,6 +38,8 @@ if __name__ == "__main__":
 
         plt.tight_layout()
 
+        plt.show(fig)
+
         pdf.savefig(fig)
         plt.close(fig)
 

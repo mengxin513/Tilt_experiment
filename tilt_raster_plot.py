@@ -6,7 +6,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 if __name__ == "__main__":
 
-    with PdfPages('tilt_raster_snake.pdf') as pdf:
+    with PdfPages('tilt_raster_standard.pdf') as pdf:
 
         print ('Loading data...')
 
@@ -14,7 +14,7 @@ if __name__ == "__main__":
         df = h5py.File('tilt_raster.hdf5', mode = 'r')
         for i in range(len(df)):
             group = df['raster%03d' % i]
-            subgroup = group['snake_raster000']
+            subgroup = group['standard_raster000']
             n = len(subgroup)
             data = np.zeros([n, 6])
             for j in range(n):
@@ -46,11 +46,13 @@ if __name__ == "__main__":
 
             fig, ax = plt.subplots(1, 1)
             graph = ax.quiver(location_shifts[:, 0] * 0.00960, location_shifts[:, 1] * 0.00772, pixel_shifts[:, 0] * angle_per_pixel_in_mrad, pixel_shifts[:, 1] * angle_per_pixel_in_mrad)
-            ax.quiverkey(graph, X = 0.3, Y = 1.1, U = 1, label = 'Tilt angle in mrad, length = 1', labelpos = 'E')
+            legend = ax.quiverkey(graph, X = 0.3, Y = 1.1, U = 1, label = '1 mrad', labelpos = 'E')
             ax.set_xlabel(r'Stage X Coordinate [$\mathrm{\mu m}$]')
             ax.set_ylabel(r'Stage Y Coordinate [$\mathrm{\mu m}$]')
+            
+            plt.show(fig)
 
-            pdf.savefig(fig)
+            pdf.savefig(fig, bbox_inches = "tight", bbox_extra_artists = [legend])
             plt.close(fig)
 
             fig, ax = plt.subplots(1, 1)
